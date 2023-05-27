@@ -39,6 +39,9 @@ inventoryRouter.post('/addpost',dealerAuthantication,async(req,res)=>{
             const result =  await cloudinary.v2.uploader.upload(image, 
                 {
                     folder : "carimgs",
+                    width : 300,
+                    height: 350,
+                     crop:'scale'
                 });
                 uplodedimgs.push({
                     public_id:result.public_id,
