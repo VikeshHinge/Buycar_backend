@@ -10,10 +10,11 @@ inventoryRouter.get('/deals',async(req,res)=>{
  
     if(query.list_price){
     if(query.list_price===500001){
-        query.list_price={$gte:0,$lte:Number(query.list_price)}
+     
+        query.list_price={ $gt: 500000 }
     }
     else{
-        query.list_price={ $gt: 500000 }
+        query.list_price={$gte:0,$lte:Number(query.list_price)}
     }
     }
 
