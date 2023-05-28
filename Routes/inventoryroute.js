@@ -9,12 +9,11 @@ inventoryRouter.get('/deals',async(req,res)=>{
     let query = req.query
  
     if(query.list_price){
-    if(query.list_price===500001){
-     
-        query.list_price={ $gt: 500000 }
+    if(query.list_price<500001){
+        query.list_price={$gte:0,$lte:Number(query.list_price)}
     }
     else{
-        query.list_price={$gte:0,$lte:Number(query.list_price)}
+        query.list_price={ $gt: 500000 }
     }
     }
 
@@ -76,6 +75,7 @@ inventoryRouter.post('/addpost',dealerAuthantication,async(req,res)=>{
 
 inventoryRouter.patch('/updatepost/:id',async(req,res)=>{
     let id = req.params.id;
+    console.log(req.body)
     try{
        let product = await Inventorymodel.findOneAndUpdate({_id:id},req.body)
         res.send({msg:'product get Updated!'})
