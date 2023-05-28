@@ -7,7 +7,20 @@ const cloudinary = require('cloudinary')
 
 inventoryRouter.get('/deals',async(req,res)=>{
     let query = req.query
+ 
+    if(query.list_price){
+    if(query.list_price===500001){
+        query.list_price={$gte:0,$lte:Number(query.list_price)}
+    }
+    else{
+        query.list_price={ $gt: 500000 }
+    }
+    }
 
+    if(query.mileage){
+        query.mileage={$gte:0,$lte:Number(query.mileage)}
+    }
+   console.log(query)
     try{
         const data = await Inventorymodel.find(query)
         res.send(data)
@@ -60,17 +73,30 @@ inventoryRouter.post('/addpost',dealerAuthantication,async(req,res)=>{
     }
 })
 
-inventoryRouter.patch('/updatepost',dealerAuthantication,async(req,res)=>{
-    let newdata = req.body;
-    res.send('PATCH')
+inventoryRouter.patch('/updatepost/:id',async(req,res)=>{
+    let id = req.params.id;
+    try{
+       let product = await Inventorymodel.findOneAndUpdate({_id:id},req.body)
+        res.send({msg:'product get Updated!'})
+    }catch(err){
+        res.send({error:err.message})
+    }
 })
 
 
-inventoryRouter.delete('/postdelete',dealerAuthantication,async(req,res)=>{
-    let newdata = req.body;
-    res.send('Delete')
-    //http://localhost:4040/inventory/addpost
+inventoryRouter.delete('/postdelete/:id',dealerAuthantication,async(req,res)=>{
+    let id = req.params.id
+    console.log(id)
+    console.log(req.body)
+    try{
+        await Inventorymodel.findOneAndDelete({_id:id})
+        res.send({msg:'product removed prom cart'})
+    }catch(err){
+        res.send({'err':err.message})
+    }
 })
+
+
 
 
 module.exports={inventoryRouter}
